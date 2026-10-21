@@ -18,9 +18,24 @@ import time
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from fake_term import FakeTerminal  # noqa: E402
 
-PY = os.path.expanduser(
-    "~/.cache/uv/environments-v2/atlas-tui-9e97be41f211eb97/bin/python3")
-APP = os.path.expanduser("~/Projects/config-atlas/atlas_tui.py")
+_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+APP = os.path.join(_ROOT, "atlas_tui.py")
+
+def _find_py() -> str:
+    """Находит python из uv-venv для atlas_tui, создавая его при необходимости."""
+    import glob
+    pattern = os.path.expanduser("~/.cache/uv/environments-v2/atlas-tui-*/bin/python3")
+    hits = sorted(glob.glob(pattern), key=os.path.getmtime, reverse=True)
+    if hits:
+        return hits[0]
+    uv = os.path.expanduser("~/.local/bin/uv")
+    if not os.path.exists(uv):
+        uv = "uv"
+    os.system(f'"{uv}" run --quiet --script "{APP}" --help >/dev/null 2>&1')
+    hits = sorted(glob.glob(pattern), key=os.path.getmtime, reverse=True)
+    return hits[0] if hits else uv
+
+PY = _find_py()
 
 # режимы, которые Textual включает и которые обязаны быть выключены
 TRACKED = ("1049", "25", "7", "1000", "1003", "1004", "1006", "1015", "2004")
@@ -37,8 +52,10 @@ def modes(raw: bytes) -> dict[str, dict[str, int]]:
 def run(label: str, killer) -> bool:
     # запускаем БЕЗ exec: обёртка должна остаться жить, чтобы поймать
     # смерть приложения и восстановить терминал
-    with FakeTerminal(["/bin/sh", os.path.expanduser(
-            "~/.local/bin/config-atlas")]) as t:
+    uv = os.path.expanduser("~/.local/bin/uv")
+    if not os.path.exists(uv):
+        uv = "uv"
+    with FakeTerminal([uv, "run", "--quiet", "--script", APP]) as t:
         t.pump(4.5)
         ps = os.popen("ps -Ao pid,command | grep atlas_tui.py | grep -v grep "
                       "| grep python3").read().strip()

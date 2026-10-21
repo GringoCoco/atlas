@@ -34,11 +34,14 @@ KEYS = {
 }
 
 
+_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+
 def make_spy_script() -> str:
     """Создаём скрипт-обёртку, логирующий действия."""
     return f"""\
 import sys, os
-sys.path.insert(0, os.path.expanduser("~/Projects/config-atlas"))
+sys.path.insert(0, {_ROOT!r})
 import atlas_tui
 os.environ["ATLAS_DUMP"] = {DUMP!r}
 
@@ -70,9 +73,10 @@ def run(keys: list[str]) -> str:
         if os.path.exists(f):
             os.unlink(f)
 
-    PY = os.path.expanduser(
-        "~/.cache/uv/environments-v2/atlas-tui-9e97be41f211eb97/bin/python3"
-    )
+    import glob
+    pattern = os.path.expanduser("~/.cache/uv/environments-v2/atlas-tui-*/bin/python3")
+    hits = sorted(glob.glob(pattern), key=os.path.getmtime, reverse=True)
+    PY = hits[0] if hits else "python3"
     pid, fd = pty.fork()
     if pid == 0:
         os.environ["TERM"] = "xterm-256color"
