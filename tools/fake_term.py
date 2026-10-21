@@ -123,9 +123,13 @@ class FakeTerminal:
 
 
 def main() -> None:
-    app = os.path.expanduser("~/.local/bin/config-atlas")
+    root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    script = os.path.join(root, "atlas_tui.py")
+    uv = os.path.expanduser("~/.local/bin/uv")
+    if not os.path.exists(uv):
+        uv = "uv"
     print("=== терминал отвечает на запросы ===")
-    with FakeTerminal(["/bin/sh", app]) as t:
+    with FakeTerminal([uv, "run", "--quiet", "--script", script]) as t:
         t.pump(4.0)
         print("ответов на запросы:", t.answered)
         # выходим через Ctrl+C
