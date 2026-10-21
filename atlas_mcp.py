@@ -15,7 +15,7 @@ Config Atlas — MCP-сервер.
     uv run --script atlas_mcp.py
 
 Подключение к Claude Code:
-    claude mcp add config-atlas -- uv run --script ~/Projects/config-atlas/atlas_mcp.py
+    claude mcp add atlas -- uv run --script /path/to/atlas_mcp.py
 
 К opencode — в ~/.config/opencode/opencode.jsonc:
     "mcp": {"servers": {"config-atlas": {

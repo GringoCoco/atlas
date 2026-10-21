@@ -33,13 +33,13 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 Клонируй репозиторий и создай команду `atlas`:
 
 ```sh
-git clone https://github.com/GringoCoco/atlas ~/Projects/atlas
+git clone https://github.com/GringoCoco/atlas ~/atlas
 ```
 
 Добавь в `~/.zshrc` (или `~/.bashrc`):
 
 ```sh
-alias atlas='uv run --quiet --script ~/Projects/atlas/atlas_tui.py'
+alias atlas='uv run --quiet --script ~/atlas/atlas_tui.py'
 ```
 
 Перезапусти терминал или выполни `source ~/.zshrc`. Теперь достаточно:
@@ -157,7 +157,7 @@ MCP-сервер запускается как отдельный процесс
 **Claude (через CLI):**
 
 ```sh
-claude mcp add atlas -- uv run --quiet --script ~/Projects/atlas/atlas_mcp.py
+claude mcp add atlas -- uv run --quiet --script ~/atlas/atlas_mcp.py
 ```
 
 **opencode** — добавь в `~/.config/opencode/opencode.jsonc`:
@@ -168,7 +168,7 @@ claude mcp add atlas -- uv run --quiet --script ~/Projects/atlas/atlas_mcp.py
     "atlas": {
       "type": "local",
       "command": ["uv", "run", "--quiet", "--script",
-                  "~/Projects/atlas/atlas_mcp.py"],
+                  "~/atlas/atlas_mcp.py"],
       "enabled": true
     }
   }
@@ -178,7 +178,7 @@ claude mcp add atlas -- uv run --quiet --script ~/Projects/atlas/atlas_mcp.py
 **Другие клиенты** (Cursor, Zed, любой MCP-совместимый) — укажи команду:
 
 ```
-uv run --quiet --script ~/Projects/atlas/atlas_mcp.py
+uv run --quiet --script ~/atlas/atlas_mcp.py
 ```
 
 ### Почему окружение читается из login-shell
