@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+*.pyo
+.DS_Store
+
+# uv / pip
+.venv/
+*.egg-info/
+dist/
+build/
+
+# кэши ATLAS (хранятся в $TMPDIR, но на всякий случай)
+atlas_pkg_cache.json
+atlas_shell_env.json
